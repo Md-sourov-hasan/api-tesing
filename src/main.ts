@@ -7,16 +7,15 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // ------------------- Serve static files -------------------
-  // This will make files in the 'uploads' folder accessible at /uploads/<filename>
+  // Serve static files for uploaded images
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/', // URL prefix
+    prefix: '/uploads/',
   });
 
-  // ------------------- Enable CORS -------------------
-  app.enableCors(); // Allows requests from mobile or other devices
+  // Enable CORS
+  app.enableCors();
 
-  // ------------------- Swagger Setup -------------------
+  // Swagger Setup
   const config = new DocumentBuilder()
     .setTitle('Image Upload API')
     .setDescription('API for uploading and managing images')
@@ -26,9 +25,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(3000);
-  console.log(`Server running on http://localhost:3000`);
-  console.log(`Swagger docs available on http://localhost:3000/api-docs`);
+  await app.listen(process.env.PORT || 3000);
+  console.log(`Server running...`);
 }
 
 bootstrap();
