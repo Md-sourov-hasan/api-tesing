@@ -18,11 +18,13 @@ import {
 } from '@nestjs/swagger';
 import * as fs from 'fs';
 
+const BASE_URL = 'https://api-tesing.onrender.com'; // <---- YOUR CURRENT BASE URL
+
 @ApiTags('Image Upload')
 @Controller('image')
 export class UploadController {
-  
-  // --------------------- Upload Image ---------------------
+
+  // ------------ UPLOAD IMAGE ------------
   @Post('upload')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -46,7 +48,7 @@ export class UploadController {
     }),
   )
   uploadImage(@UploadedFile() file: Express.Multer.File) {
-    const imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+    const imageUrl = `${BASE_URL}/uploads/${file.filename}`;
     return {
       message: 'Image uploaded successfully',
       filename: file.filename,
@@ -54,7 +56,7 @@ export class UploadController {
     };
   }
 
-  // --------------------- Update Image ---------------------
+  // ------------ UPDATE IMAGE ------------
   @Put('update/:oldFile')
   @ApiParam({ name: 'oldFile', required: true })
   @ApiConsumes('multipart/form-data')
@@ -88,7 +90,7 @@ export class UploadController {
       fs.unlinkSync(oldPath);
     }
 
-    const newImageUrl = `http://localhost:3000/uploads/${file.filename}`;
+    const newImageUrl = `${BASE_URL}/uploads/${file.filename}`;
 
     return {
       message: 'Image updated',
@@ -97,12 +99,12 @@ export class UploadController {
     };
   }
 
-  // --------------------- List All Images ---------------------
+  // ------------ GET ALL IMAGE LIST ------------
   @Get('all')
   @ApiOperation({ summary: 'Get all uploaded images list with full URLs' })
   getAllImages() {
     const folder = './uploads';
-    const baseUrl = 'http://localhost:3000/uploads/';
+    const baseUrl = `${BASE_URL}/uploads/`;
 
     if (!fs.existsSync(folder)) {
       return { total: 0, images: [] };
